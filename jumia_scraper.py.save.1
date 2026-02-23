@@ -2,26 +2,8 @@ import requests
 import pandas as  pd 
 from bs4  import BeautifulSoup
 from sqlalchemy import create_engine
-import os 
-from dotenv import load_dotenv
-import urllib.parse
 
-# Load environment variables
-load_dotenv()
-
-user=os.getenv('DB_USER')
-password=os.getenv('PASSWORD')
-host=os.getenv('DB_HOST')
-database=os.getenv('DATABASE')
-
-# Consider special characters in the password
-safe_pass = urllib.parse.quote_plus(password)
-
-# Website url
 url  = "https://www.jumia.co.ke/computers-tablets/"
-
-# Postgres connection string
-engine = create_engine(f"postgresql://{user}:{safe_pass}@{host}:5432/{database}")
 
 def scrape_jumia(url): 
     html = requests.get(url).text 
@@ -30,8 +12,6 @@ def scrape_jumia(url):
     products = []	
 
     cards = soup.select("article.prd")  
-	
-    # Iterate through jumia's product cards	
     for card in cards:
         # product name
         item_name = card.select_one("h3.name")
@@ -57,7 +37,6 @@ def scrape_jumia(url):
         image_element = card.select_one("img")
         image = image_element.get("data-src") if image_element else None
       
-	# Confirm all required fields exist
         if all([item_name, current_price, product_link, image]):
             products.append({
                 "item_name": item_name,
@@ -77,12 +56,5 @@ for page in range(1, 21):
 	page_data = scrape_jumia(page_url)
 	pages.append(page_data)
 
-# Append to pandas dataframe
 data = pd.concat(pages, ignore_index = True)
-
-# Upload to database
-data.to_sql('raw_data', con=engine, if_exists='replace', index=False)
-
-# Confirm database upload
-data_read = pd.read_sql_table('raw_data', con=engine)
-print(data_read)
+print(data)
