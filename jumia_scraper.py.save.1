@@ -2,22 +2,8 @@ import requests
 import pandas as  pd 
 from bs4  import BeautifulSoup
 from sqlalchemy import create_engine
-import os 
-from dotenv import load_dotenv
-import urllib.parse
-
-# Load environment variables
-load_dotenv()
-
-user=os.getenv('DB_USER')
-password=os.getenv('PASSWORD')
-host=os.getenv('DB_HOST')
-database=os.getenv('DATABASE')
-
-safe_pass = urllib.parse.quote_plus(password)
 
 url  = "https://www.jumia.co.ke/computers-tablets/"
-engine = create_engine(f"postgresql://{user}:{safe_pass}@{host}:5432/{database}")
 
 def scrape_jumia(url): 
     html = requests.get(url).text 
@@ -71,7 +57,4 @@ for page in range(1, 21):
 	pages.append(page_data)
 
 data = pd.concat(pages, ignore_index = True)
-data.to_sql('raw_data', con=engine, if_exists='replace', index=False)
-
-data_read = pd.read_sql_table('raw_data', con=engine)
-print(data_read)
+print(data)
