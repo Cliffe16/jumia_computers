@@ -1,10 +1,17 @@
 # Online Marketplace Scraper
 
-This project contains a BeautifulSoup web scraping script that scrapes computers from an online marketplace with pagination and database strorage.
+This project contains a BeautifulSoup web scraping script that scrapes computers from Jumia with pagination and database strorage.
 
 ## Tools
 * **Scraper:** BeautifulSoup4
 * **Storage:** psql
+
+## Setup & Installation
+Clone the repository and install the required dependencies:
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+pip install -r requirements.txt
 
 ## Project structure
 ```text
@@ -15,4 +22,6 @@ jumia_computers_scraper/
 ```
 
 ## How it works
-The script iterates over the product cards selecting the required fields based on the html class of the elements. These fields are then stored in a dictionary if the `item_name`, `current_price`, `product_link` and `image` exist. The scraped fields are the added to the empty `products` list defined and stored in a Pandas DataFrame. To ensure multiple pages are scraped, a `for loop` is initialized for `range(1, 21)` that iterates over the computers' pages and adding the fields to the empty `pages` list and later added to the dataframe. The `to_sql` pandas function is then initialized to upload the data to the database
+* **Extraction:** The script iterates through the first 20 pages of the Jumia Computers category.
+* **Validation:** It isolates individual product cards and extracts fields based on their CSS classes. A record is only appended if it has a valid `item_name`, `current_price`, `product_link`, and `image`.
+* **Database Load:** Data is batched into a Pandas DataFrame and loaded into Postgres.
