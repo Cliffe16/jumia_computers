@@ -3,8 +3,9 @@
 This project contains a BeautifulSoup web scraping script that scrapes computers from Jumia with pagination and database strorage.
 
 ## Tools
-* **Scraper:** BeautifulSoup4
-* **Storage:** psql
+* **Extraction:** Python, Requests, BeautifulSoup4 
+* **Transformation:** Pandas
+* **Storage:** PostgreSQL, SQLAlchemy
 
 ## Setup & Installation
 Clone the repository and install the required dependencies:
